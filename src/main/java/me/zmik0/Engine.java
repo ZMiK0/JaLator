@@ -52,7 +52,7 @@ public class Engine implements ActionListener {
         if(e.getActionCommand().equals("R")) {
             this.displayText="";
         } else if (e.getActionCommand().equals("=")) {
-            //pass
+            this.displayText=operation().toString();
         } else {this.displayText+=e.getActionCommand();}
 
         this.display.setText(this.displayText);
@@ -162,5 +162,11 @@ public class Engine implements ActionListener {
         for(JButton but: engine.buttons.keySet()) {
             but.addActionListener(engine);
         }
+    }
+
+    private Integer operation() {
+        System.out.println(this.display.getText());
+        String str = this.display.getText();
+        return 1;
     }
 }
