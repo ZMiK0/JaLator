@@ -5,7 +5,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
@@ -82,7 +85,7 @@ public class Engine implements ActionListener {
         this.n8 = new JButton("8");
         this.n9 = new JButton("9");
 
-        this.divide = new JButton("%");
+        this.divide = new JButton("/");
         this.multiply = new JButton("x");
         this.substract = new JButton("-");
         this.add = new JButton("+");
@@ -167,6 +170,28 @@ public class Engine implements ActionListener {
     private Integer operation() {
         System.out.println(this.display.getText());
         String str = this.display.getText();
-        return 1;
+
+        String regex = "(-?\\d+)([+-/x])(-?\\d+)";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(str);
+
+        if(matcher.matches()) {
+            this.num1 = Integer.parseInt(matcher.group(1));
+            this.operation = matcher.group(2).toCharArray()[0];
+            this.num2 = Integer.parseInt(matcher.group(3));
+        } else {
+            System.out.println("WRONG");
+            return 0;
+        }
+
+        System.out.println("N1: " + this.num1 + " " + this.operation + " N2: " + this.num2 );
+
+        switch (this.operation) {
+            case '+': return this.num1 + this.num2;
+            case '-': return this.num1 - this.num2;
+            case 'x': return this.num1 * this.num2;
+            case '/': return this.num2 != 0 ? this.num1 / this.num2 : 0;
+            default: return 0;
+        }
     }
 }
