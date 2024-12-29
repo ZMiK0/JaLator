@@ -1,6 +1,7 @@
 package me.zmik0;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -45,6 +46,12 @@ public class Engine implements ActionListener {
     private int num1, num2, result;
     private char operation;
 
+    private Color bg;
+    private Color a1;
+    private Color a2;
+    private Color bt;
+    private Color fg;
+
     /**
      * Performs the button action
      * @param e the event to be processed
@@ -73,6 +80,11 @@ public class Engine implements ActionListener {
         this.buttonPanel = new JPanel();
         this.display = new JTextField(20);
         this.displayText = "";
+        this.bg = new Color(29,32,33);
+        this.a1 = new Color(184,187,38);
+        this.a2 = new Color(250,189,47);
+        this.bt = new Color(40,40,40);
+        this.fg = new Color(235,219,178);
 
         this.n0 = new JButton("0");
         this.n1 = new JButton("1");
@@ -123,14 +135,21 @@ public class Engine implements ActionListener {
      */
     private void setSettings() {
         this.contentPanel.setLayout(new GridLayout(0, 1, 2, 2));
+        this.contentPanel.setBackground(this.bg);
         this.frame.add(this.contentPanel);
+        this.frame.setBackground(this.bg);
 
         this.displayPanel.setLayout(new FlowLayout());
+        this.displayPanel.setBackground(this.bg);
         this.contentPanel.add(this.displayPanel);
         this.displayPanel.add(this.display);
         this.display.setEditable(false);
+        this.display.setForeground(this.fg);
+        this.display.setBackground(this.bt);
+        this.display.setFont(new Font("JetBrainsMono Nerd Font",Font.BOLD,24));
 
         this.buttonPanel.setLayout(new GridLayout(4, 4, 2, 2));
+        this.buttonPanel.setBackground(this.bg);
         this.contentPanel.add(this.buttonPanel);
 
         for(JButton but : buttons.keySet()) {
@@ -152,9 +171,11 @@ public class Engine implements ActionListener {
      * @param _type
      */
     private void setFeaturesButton(JButton _button, ButtonType _type) {
+        _button.setForeground(this.fg);
+        _button.setBackground(this.bt);
         if (_type.equals(ButtonType.REGULAR)) {
-            _button.setForeground(Color.CYAN);
-        } else { _button.setForeground(Color.GREEN); }
+            _button.setBorder(new LineBorder(this.a1));
+        } else { _button.setBorder(new LineBorder(this.a2)); }
     }
 
     /**
@@ -167,6 +188,10 @@ public class Engine implements ActionListener {
         }
     }
 
+    /**
+     * This method is the Jesus Christ incarnation, regex the display and operates it
+     * @return
+     */
     private Integer operation() {
         System.out.println(this.display.getText());
         String str = this.display.getText();
