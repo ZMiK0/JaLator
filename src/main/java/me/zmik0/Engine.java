@@ -2,6 +2,9 @@ package me.zmik0;
 
 import javax.swing.*;
 
+import java.awt.*;
+import java.util.LinkedHashMap;
+
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class Engine {
@@ -31,6 +34,8 @@ public class Engine {
 
     private enum ButtonType {REGULAR, OPERATOR}
 
+    private LinkedHashMap<JButton, ButtonType> buttons;
+
     private int num1, num2, result;
     private char operation;
 
@@ -39,7 +44,7 @@ public class Engine {
         this.contentPanel = new JPanel();
         this.displayPanel = new JPanel();
         this.buttonPanel = new JPanel();
-        this.display = new JTextField();
+        this.display = new JTextField(20);
 
         this.n0 = new JButton("0");
         this.n1 = new JButton("1");
@@ -53,22 +58,65 @@ public class Engine {
         this.n9 = new JButton("9");
 
         this.divide = new JButton("%");
-        this.multiply = new JButton("*");
+        this.multiply = new JButton("x");
         this.substract = new JButton("-");
         this.add = new JButton("+");
         this.equal = new JButton("=");
         this.reset = new JButton("R");
 
-        setSettings(this.frame);
+        this.buttons = new LinkedHashMap<>();
+
+        buttons.put(this.n7, ButtonType.REGULAR);
+        buttons.put(this.n8, ButtonType.REGULAR);
+        buttons.put(this.n9, ButtonType.REGULAR);
+        buttons.put(this.divide, ButtonType.OPERATOR);
+
+        buttons.put(this.n4, ButtonType.REGULAR);
+        buttons.put(this.n5, ButtonType.REGULAR);
+        buttons.put(this.n6, ButtonType.REGULAR);
+        buttons.put(this.multiply, ButtonType.OPERATOR);
+
+        buttons.put(this.n1, ButtonType.REGULAR);
+        buttons.put(this.n2, ButtonType.REGULAR);
+        buttons.put(this.n3, ButtonType.REGULAR);
+        buttons.put(this.add, ButtonType.OPERATOR);
+
+        buttons.put(this.n0, ButtonType.REGULAR);
+        buttons.put(this.reset, ButtonType.OPERATOR);
+        buttons.put(this.substract, ButtonType.OPERATOR);
+        buttons.put(this.equal, ButtonType.OPERATOR);
+
+        setSettings();
     }
 
-    private void setSettings(JFrame frame) {
+    private void setSettings() {
+        this.contentPanel.setLayout(new GridLayout(0, 1, 2, 2));
+        this.frame.add(this.contentPanel);
 
-        frame.setResizable(false);
-        frame.setLocation(50, 100);
-        frame.setSize(300, 400);
-        frame.setVisible(true);
-        frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.displayPanel.setLayout(new FlowLayout());
+        this.contentPanel.add(this.displayPanel);
+        this.displayPanel.add(this.display);
+        this.display.setEditable(false);
 
+        this.buttonPanel.setLayout(new GridLayout(4, 4, 2, 2));
+        this.contentPanel.add(this.buttonPanel);
+
+        for(JButton but : buttons.keySet()) {
+            this.buttonPanel.add(but);
+            setFeaturesButton(but, buttons.get(but));
+        }
+
+        this.frame.setResizable(false);
+        this.frame.setLocation(50, 100);
+        this.frame.setSize(300, 400);
+        this.frame.setVisible(true);
+        this.frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+    }
+
+    private void setFeaturesButton(JButton _button, ButtonType _type) {
+        if (_type.equals(ButtonType.REGULAR)) {
+            _button.setForeground(Color.CYAN);
+        } else { _button.setForeground(Color.GREEN); }
     }
 }
