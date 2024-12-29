@@ -3,16 +3,19 @@ package me.zmik0;
 import javax.swing.*;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.LinkedHashMap;
 
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
-public class Engine {
+public class Engine implements ActionListener {
     private JFrame frame;
     private JPanel contentPanel;
     private JPanel displayPanel;
     private JPanel buttonPanel;
     private JTextField display;
+    private String displayText;
 
     private JButton n0;
     private JButton n1;
@@ -39,12 +42,34 @@ public class Engine {
     private int num1, num2, result;
     private char operation;
 
+    /**
+     * Performs the button action
+     * @param e the event to be processed
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+        if(e.getActionCommand().equals("R")) {
+            this.displayText="";
+        } else if (e.getActionCommand().equals("=")) {
+            //pass
+        } else {this.displayText+=e.getActionCommand();}
+
+        this.display.setText(this.displayText);
+    }
+
+
+    /**
+     * Builds the window and the calculator itself
+     * @param msg
+     */
     public Engine(String msg) {
         this.frame = new JFrame(msg);
         this.contentPanel = new JPanel();
         this.displayPanel = new JPanel();
         this.buttonPanel = new JPanel();
         this.display = new JTextField(20);
+        this.displayText = "";
 
         this.n0 = new JButton("0");
         this.n1 = new JButton("1");
@@ -87,8 +112,12 @@ public class Engine {
         buttons.put(this.equal, ButtonType.OPERATOR);
 
         setSettings();
+        addActionEvent(this);
     }
 
+    /**
+     * Sets the calculator settings
+     */
     private void setSettings() {
         this.contentPanel.setLayout(new GridLayout(0, 1, 2, 2));
         this.frame.add(this.contentPanel);
@@ -114,9 +143,24 @@ public class Engine {
 
     }
 
+    /**
+     * Modifies the button color depending on the button type
+     * @param _button
+     * @param _type
+     */
     private void setFeaturesButton(JButton _button, ButtonType _type) {
         if (_type.equals(ButtonType.REGULAR)) {
             _button.setForeground(Color.CYAN);
         } else { _button.setForeground(Color.GREEN); }
+    }
+
+    /**
+     * Waits for a button to be pressed
+     * @param engine
+     */
+    private void addActionEvent(Engine engine) {
+        for(JButton but: engine.buttons.keySet()) {
+            but.addActionListener(engine);
+        }
     }
 }
