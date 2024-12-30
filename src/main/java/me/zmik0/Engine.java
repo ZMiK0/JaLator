@@ -6,7 +6,6 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,6 +37,9 @@ public class Engine implements ActionListener {
     private JButton add;
     private JButton equal;
     private JButton reset;
+
+    private JButton power;
+    private JButton sqrt;
 
     private enum ButtonType {REGULAR, OPERATOR}
 
@@ -80,6 +82,7 @@ public class Engine implements ActionListener {
         this.buttonPanel = new JPanel();
         this.display = new JTextField(20);
         this.displayText = "";
+
         this.bg = new Color(29,32,33);
         this.a1 = new Color(184,187,38);
         this.a2 = new Color(250,189,47);
@@ -104,6 +107,9 @@ public class Engine implements ActionListener {
         this.equal = new JButton("=");
         this.reset = new JButton("R");
 
+        this.power = new JButton("^");
+        this.sqrt = new JButton("√");
+
         this.buttons = new LinkedHashMap<>();
 
         buttons.put(this.n7, ButtonType.REGULAR);
@@ -122,8 +128,11 @@ public class Engine implements ActionListener {
         buttons.put(this.add, ButtonType.OPERATOR);
 
         buttons.put(this.n0, ButtonType.REGULAR);
-        buttons.put(this.reset, ButtonType.OPERATOR);
+        buttons.put(this.power, ButtonType.OPERATOR);
+        buttons.put(this.sqrt, ButtonType.OPERATOR);
         buttons.put(this.substract, ButtonType.OPERATOR);
+
+        buttons.put(this.reset, ButtonType.OPERATOR);
         buttons.put(this.equal, ButtonType.OPERATOR);
 
         setSettings();
@@ -148,7 +157,7 @@ public class Engine implements ActionListener {
         this.display.setBackground(this.bt);
         this.display.setFont(new Font("JetBrainsMono Nerd Font",Font.BOLD,24));
 
-        this.buttonPanel.setLayout(new GridLayout(4, 4, 2, 2));
+        this.buttonPanel.setLayout(new GridLayout(5, 4, 2, 2));
         this.buttonPanel.setBackground(this.bg);
         this.contentPanel.add(this.buttonPanel);
 
@@ -196,14 +205,23 @@ public class Engine implements ActionListener {
         System.out.println(this.display.getText());
         String str = this.display.getText();
 
-        String regex = "(-?\\d+)([+-/x])(-?\\d+)";
+        String regex = "(-?\\d+)([+-/^x])(-?\\d+)";
+        String regexSqrt = "(-?√)(\\d+)";
         Pattern pattern = Pattern.compile(regex);
+        Pattern patternSqrt = Pattern.compile(regexSqrt);
         Matcher matcher = pattern.matcher(str);
+        Matcher matcherSqrt = patternSqrt.matcher(str);
 
         if(matcher.matches()) {
             this.num1 = Integer.parseInt(matcher.group(1));
             this.operation = matcher.group(2).toCharArray()[0];
             this.num2 = Integer.parseInt(matcher.group(3));
+        } else if (matcherSqrt.matches()) {
+            System.out.println(matcherSqrt.group(1));
+            if(matcherSqrt.group(1).toCharArray()[0] == '-') {
+                this.operation = matcherSqrt.group(1).toCharArray()[1];
+            } else {this.operation = matcherSqrt.group(1).toCharArray()[0];}
+            this.num1 = Integer.parseInt(matcherSqrt.group(2));
         } else {
             System.out.println("WRONG");
             return 0;
@@ -216,7 +234,32 @@ public class Engine implements ActionListener {
             case '-': return this.num1 - this.num2;
             case 'x': return this.num1 * this.num2;
             case '/': return this.num2 != 0 ? this.num1 / this.num2 : 0;
+            case '^': return powerOf(this.num1,this.num2);
+            case '√': return matcherSqrt.group(1).toCharArray()[0] == '-' ? -sqrtOf(this.num1) : sqrtOf(this.num1);
             default: return 0;
         }
+    }
+
+    /**
+     * Power function
+     * @param n1
+     * @param n2
+     * @return
+     */
+    private int powerOf(int n1, int n2) {
+        int res = 1;
+        for (int i = 0; i < n2; i++ ) {
+            res *= n1;
+        }
+        return res;
+    }
+
+    /**
+     * Sqrt of a number function
+     * @param n
+     * @return
+     */
+    private int sqrtOf(int n) {
+        return (int) Math.sqrt(n);
     }
 }
