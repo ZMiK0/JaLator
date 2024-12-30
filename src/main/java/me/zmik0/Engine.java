@@ -73,7 +73,7 @@ public class Engine implements ActionListener {
 
     /**
      * Builds the window and the calculator itself
-     * @param msg
+     * @param msg window title
      */
     public Engine(String msg) {
         this.frame = new JFrame(msg);
@@ -189,7 +189,7 @@ public class Engine implements ActionListener {
 
     /**
      * Waits for a button to be pressed
-     * @param engine
+     * @param engine this engine
      */
     private void addActionEvent(Engine engine) {
         for(JButton but: engine.buttons.keySet()) {
@@ -199,7 +199,7 @@ public class Engine implements ActionListener {
 
     /**
      * This method is the Jesus Christ incarnation, regex the display and operates it
-     * @return
+     * @return the result operation
      */
     private Integer operation() {
         System.out.println(this.display.getText());
@@ -244,7 +244,7 @@ public class Engine implements ActionListener {
      * Power function
      * @param n1
      * @param n2
-     * @return
+     * @return the power
      */
     private int powerOf(int n1, int n2) {
         int res = 1;
@@ -257,7 +257,7 @@ public class Engine implements ActionListener {
     /**
      * Sqrt of a number function
      * @param n
-     * @return
+     * @return the square root
      */
     private int sqrtOf(int n) {
         return (int) Math.sqrt(n);
