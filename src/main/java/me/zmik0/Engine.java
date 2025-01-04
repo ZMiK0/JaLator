@@ -80,7 +80,7 @@ public class Engine implements ActionListener {
         this.contentPanel = new JPanel();
         this.displayPanel = new JPanel();
         this.buttonPanel = new JPanel();
-        this.display = new JTextField(20);
+        this.display = new JTextField(12);
         this.displayText = "";
 
         this.bg = new Color(29,32,33);
@@ -217,17 +217,14 @@ public class Engine implements ActionListener {
             this.operation = matcher.group(2).toCharArray()[0];
             this.num2 = Integer.parseInt(matcher.group(3));
         } else if (matcherSqrt.matches()) {
-            System.out.println(matcherSqrt.group(1));
             if(matcherSqrt.group(1).toCharArray()[0] == '-') {
                 this.operation = matcherSqrt.group(1).toCharArray()[1];
             } else {this.operation = matcherSqrt.group(1).toCharArray()[0];}
             this.num1 = Integer.parseInt(matcherSqrt.group(2));
         } else {
-            System.out.println("WRONG");
             return 0;
         }
 
-        System.out.println("N1: " + this.num1 + " " + this.operation + " N2: " + this.num2 );
 
         switch (this.operation) {
             case '+': return this.num1 + this.num2;
