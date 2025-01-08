@@ -41,6 +41,8 @@ public class Engine implements ActionListener {
     private JButton power;
     private JButton sqrt;
 
+    private JButton ret;
+
     private enum ButtonType {REGULAR, OPERATOR}
 
     private LinkedHashMap<JButton, ButtonType> buttons;
@@ -64,7 +66,9 @@ public class Engine implements ActionListener {
         if(e.getActionCommand().equals("R")) {
             this.displayText="";
         } else if (e.getActionCommand().equals("=")) {
-            this.displayText=operation().toString();
+            this.displayText = operation().toString();
+        } else if (e.getActionCommand().equals("<-")) {
+            this.displayText= displayText.substring(0, this.display.getText().length() - 1) ;
         } else {this.displayText+=e.getActionCommand();}
 
         this.display.setText(this.displayText);
@@ -110,6 +114,8 @@ public class Engine implements ActionListener {
         this.power = new JButton("^");
         this.sqrt = new JButton("√");
 
+        this.ret = new JButton("<-");
+
         this.buttons = new LinkedHashMap<>();
 
         buttons.put(this.n7, ButtonType.REGULAR);
@@ -134,6 +140,8 @@ public class Engine implements ActionListener {
 
         buttons.put(this.reset, ButtonType.OPERATOR);
         buttons.put(this.equal, ButtonType.OPERATOR);
+
+        buttons.put(this.ret, ButtonType.OPERATOR);
 
         setSettings();
         addActionEvent(this);
