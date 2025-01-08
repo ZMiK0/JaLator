@@ -42,6 +42,7 @@ public class Engine implements ActionListener {
     private JButton sqrt;
 
     private JButton ret;
+    private JButton ans;
 
     private enum ButtonType {REGULAR, OPERATOR}
 
@@ -66,9 +67,12 @@ public class Engine implements ActionListener {
         if(e.getActionCommand().equals("R")) {
             this.displayText="";
         } else if (e.getActionCommand().equals("=")) {
-            this.displayText = operation().toString();
+            this.result = operation();
+            this.displayText = Integer.toString(this.result);
         } else if (e.getActionCommand().equals("<-")) {
             this.displayText= displayText.substring(0, this.display.getText().length() - 1) ;
+        } else if (e.getActionCommand().equals("ANS")) {
+            this.displayText+= this.result;
         } else {this.displayText+=e.getActionCommand();}
 
         this.display.setText(this.displayText);
@@ -80,6 +84,7 @@ public class Engine implements ActionListener {
      * @param msg window title
      */
     public Engine(String msg) {
+        this.result = 0;
         this.frame = new JFrame(msg);
         this.contentPanel = new JPanel();
         this.displayPanel = new JPanel();
@@ -108,13 +113,14 @@ public class Engine implements ActionListener {
         this.multiply = new JButton("x");
         this.substract = new JButton("-");
         this.add = new JButton("+");
-        this.equal = new JButton("=");
-        this.reset = new JButton("R");
+        this.ret = new JButton("<-");
+        this.ans = new JButton("ANS");
 
         this.power = new JButton("^");
         this.sqrt = new JButton("√");
 
-        this.ret = new JButton("<-");
+        this.reset = new JButton("R");
+        this.equal = new JButton("=");
 
         this.buttons = new LinkedHashMap<>();
 
@@ -138,10 +144,13 @@ public class Engine implements ActionListener {
         buttons.put(this.sqrt, ButtonType.OPERATOR);
         buttons.put(this.substract, ButtonType.OPERATOR);
 
+        buttons.put(this.ret, ButtonType.OPERATOR);
+        buttons.put(this.ans, ButtonType.OPERATOR);
+
         buttons.put(this.reset, ButtonType.OPERATOR);
         buttons.put(this.equal, ButtonType.OPERATOR);
 
-        buttons.put(this.ret, ButtonType.OPERATOR);
+
 
         setSettings();
         addActionEvent(this);
