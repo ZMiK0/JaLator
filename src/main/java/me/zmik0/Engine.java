@@ -75,33 +75,42 @@ public class Engine implements ActionListener {
 
     /**
      * Performs the button action
+     *
      * @param e the event to be processed
      */
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        if(e.getActionCommand().equals("R")) {
-            this.displayText="";
+        if (e.getActionCommand().equals("R")) {
+            this.displayText = "";
             this.base = setBase(e.getActionCommand());
         } else if (e.getActionCommand().equals("=")) {
-            this.result = operation();
-            this.displayText = Integer.toString(this.result);
+            if (this.base != 0) {
+                this.result = operation();
+                this.displayText = Integer.toString(this.result);
+            } else {
+                this.displayText = "Select Base";
+            }
         } else if (e.getActionCommand().equals("<-")) {
-            this.displayText= displayText.substring(0, this.display.getText().length() - 1) ;
+            this.displayText = displayText.substring(0, this.display.getText().length() - 1);
         } else if (e.getActionCommand().equals("ANS")) {
-            this.displayText+= this.result;
-        } else if(e.getActionCommand().charAt(0) == 'b') {
+            this.displayText += this.result;
+        } else if (e.getActionCommand().charAt(0) == 'b') {
 
-            if(this.displayText.equals("Select Base")) {
+            if (this.displayText.equals("Select Base")) {
                 this.displayText = "";
             }
 
+            int previousBase = this.base;
             this.base = setBase(e.getActionCommand());
+            this.displayText = changeSingle(this.displayText, previousBase);
 
         } else {
-            if(this.base!=0) {
+            if (this.base != 0) {
                 this.displayText += e.getActionCommand();
-            } else {this.displayText = "Select Base";}
+            } else {
+                this.displayText = "Select Base";
+            }
         }
 
         this.display.setText(this.displayText);
@@ -110,6 +119,7 @@ public class Engine implements ActionListener {
 
     /**
      * Builds the window and the calculator itself
+     *
      * @param msg window title
      */
     public Engine(String msg) {
@@ -125,11 +135,11 @@ public class Engine implements ActionListener {
         this.display = new JTextField(12);
         this.displayText = "";
 
-        this.bg = new Color(29,32,33);
-        this.a1 = new Color(184,187,38);
-        this.a2 = new Color(250,189,47);
-        this.bt = new Color(40,40,40);
-        this.fg = new Color(235,219,178);
+        this.bg = new Color(29, 32, 33);
+        this.a1 = new Color(184, 187, 38);
+        this.a2 = new Color(250, 189, 47);
+        this.bt = new Color(40, 40, 40);
+        this.fg = new Color(235, 219, 178);
         this.off = new Color(60, 56, 54);
 
         this.b2 = new JButton("b2");
@@ -220,7 +230,7 @@ public class Engine implements ActionListener {
         this.topPanel.setBackground(this.bg);
         this.contentPanel.add(this.topPanel);
 
-        this.toolPanel.setLayout(new GridLayout(1,6,4,0));
+        this.toolPanel.setLayout(new GridLayout(1, 6, 4, 0));
         this.toolPanel.setBackground(this.bg);
         this.topPanel.add(this.toolPanel);
 
@@ -228,21 +238,21 @@ public class Engine implements ActionListener {
         this.displayPanel.setBackground(this.bg);
         this.topPanel.add(this.displayPanel);
         this.displayPanel.add(this.display);
-        this.display.setEditable(false);
+        this.display.setEditable(true);
         this.display.setForeground(this.fg);
         this.display.setBackground(this.bt);
-        this.display.setFont(new Font("JetBrainsMono Nerd Font",Font.BOLD,24));
+        this.display.setFont(new Font("JetBrainsMono Nerd Font", Font.BOLD, 24));
 
         this.buttonPanel.setLayout(new GridLayout(5, 4, 2, 2));
         this.buttonPanel.setBackground(this.bg);
         this.contentPanel.add(this.buttonPanel);
 
-        for(JButton but: toolButtons.keySet()) {
+        for (JButton but : toolButtons.keySet()) {
             this.toolPanel.add(but);
             setFeaturesButton(but, toolButtons.get(but));
         }
 
-        for(JButton but : buttons.keySet()) {
+        for (JButton but : buttons.keySet()) {
             this.buttonPanel.add(but);
             setFeaturesButton(but, buttons.get(but));
         }
@@ -257,6 +267,7 @@ public class Engine implements ActionListener {
 
     /**
      * Modifies the button color depending on the button type
+     *
      * @param _button
      * @param _type
      */
@@ -264,29 +275,34 @@ public class Engine implements ActionListener {
         _button.setForeground(this.fg);
         _button.setBackground(this.bt);
         if (_type.equals(ButtonType.REGULAR)) {
-            _button.setBorder(new LineBorder(this.a1));
+            _button.setBorder(new LineBorder(this.off));
+            _button.setEnabled(false);
         } else if (_type.equals(ButtonType.BASE)) {
             _button.setBorder(new LineBorder(this.off));
         } else if (_type.equals(ButtonType.EXTRA)) {
             _button.setBorder(new LineBorder(this.a1));
-        } else { _button.setBorder(new LineBorder(this.a2)); }
+        } else {
+            _button.setBorder(new LineBorder(this.a2));
+        }
     }
 
     /**
      * Waits for a button to be pressed
+     *
      * @param engine this engine
      */
     private void addActionEvent(Engine engine) {
-        for(JButton but: engine.buttons.keySet()) {
+        for (JButton but : engine.buttons.keySet()) {
             but.addActionListener(engine);
         }
-        for(JButton but: engine.toolButtons.keySet()) {
+        for (JButton but : engine.toolButtons.keySet()) {
             but.addActionListener(engine);
         }
     }
 
     /**
      * This method is the Jesus Christ incarnation, regex the display and operates it
+     *
      * @return the result operation
      */
     private Integer operation() {
@@ -296,18 +312,20 @@ public class Engine implements ActionListener {
         String regex = "(-?\\d+)([+-/^x])(-?\\d+)";
         String regexSqrt = "(-?√)(\\d+)";
         Pattern pattern = Pattern.compile(regex);
-        Pattern patternSqrt = Pattern.compile(regexSqrt);<
+        Pattern patternSqrt = Pattern.compile(regexSqrt);
         Matcher matcher = pattern.matcher(str);
         Matcher matcherSqrt = patternSqrt.matcher(str);
 
-        if(matcher.matches()) {
+        if (matcher.matches()) {
             this.num1 = Integer.parseInt(matcher.group(1));
             this.operation = matcher.group(2).toCharArray()[0];
             this.num2 = Integer.parseInt(matcher.group(3));
         } else if (matcherSqrt.matches()) {
-            if(matcherSqrt.group(1).toCharArray()[0] == '-') {
+            if (matcherSqrt.group(1).toCharArray()[0] == '-') {
                 this.operation = matcherSqrt.group(1).toCharArray()[1];
-            } else {this.operation = matcherSqrt.group(1).toCharArray()[0];}
+            } else {
+                this.operation = matcherSqrt.group(1).toCharArray()[0];
+            }
             this.num1 = Integer.parseInt(matcherSqrt.group(2));
         } else {
             return 0;
@@ -315,25 +333,33 @@ public class Engine implements ActionListener {
 
 
         switch (this.operation) {
-            case '+': return this.num1 + this.num2;
-            case '-': return this.num1 - this.num2;
-            case 'x': return this.num1 * this.num2;
-            case '/': return this.num2 != 0 ? this.num1 / this.num2 : 0;
-            case '^': return powerOf(this.num1,this.num2);
-            case '√': return matcherSqrt.group(1).toCharArray()[0] == '-' ? -sqrtOf(this.num1) : sqrtOf(this.num1);
-            default: return 0;
+            case '+':
+                return this.num1 + this.num2;
+            case '-':
+                return this.num1 - this.num2;
+            case 'x':
+                return this.num1 * this.num2;
+            case '/':
+                return this.num2 != 0 ? this.num1 / this.num2 : 0;
+            case '^':
+                return powerOf(this.num1, this.num2);
+            case '√':
+                return matcherSqrt.group(1).toCharArray()[0] == '-' ? -sqrtOf(this.num1) : sqrtOf(this.num1);
+            default:
+                return 0;
         }
     }
 
     /**
      * Power function
+     *
      * @param n1
      * @param n2
      * @return the power
      */
     private int powerOf(int n1, int n2) {
         int res = 1;
-        for (int i = 0; i < n2; i++ ) {
+        for (int i = 0; i < n2; i++) {
             res *= n1;
         }
         return res;
@@ -341,6 +367,7 @@ public class Engine implements ActionListener {
 
     /**
      * Sqrt of a number function
+     *
      * @param n
      * @return the square root
      */
@@ -348,27 +375,103 @@ public class Engine implements ActionListener {
         return (int) Math.sqrt(n);
     }
 
+    /**
+     * Sets the calculator base and manages the available buttons
+     *
+     * @param buttonType
+     * @return the base
+     */
     private int setBase(String buttonType) {
 
-        for(JButton but: toolButtons.keySet()) {
+        for (JButton but : toolButtons.keySet()) {
             but.setBorder(new LineBorder(this.off));
+        }
+
+        for (JButton but : buttons.keySet()) {
+            if (buttons.get(but).equals(ButtonType.REGULAR)) {
+                but.setEnabled(false);
+                but.setBorder(new LineBorder(this.off));
+            }
         }
 
         switch (buttonType) {
             case "b2":
                 this.b2.setBorder(new LineBorder(this.a1));
+                for (JButton but : buttons.keySet()) {
+                    if (buttons.get(but).equals(ButtonType.REGULAR) && (but.getText().equals("1") || but.getText().equals("0"))) {
+                        but.setBorder(new LineBorder(this.a1));
+                        but.setEnabled(true);
+                    }
+                }
                 return 2;
             case "b8":
                 this.b8.setBorder(new LineBorder(this.a1));
+                for (JButton but : buttons.keySet()) {
+                    if (buttons.get(but).equals(ButtonType.REGULAR) && (!but.getText().equals("9") && !but.getText().equals("8"))) {
+                        but.setBorder(new LineBorder(this.a1));
+                        but.setEnabled(true);
+                    }
+                }
                 return 8;
             case "b10":
                 this.b10.setBorder(new LineBorder(this.a1));
+                for (JButton but : buttons.keySet()) {
+                    if (buttons.get(but).equals(ButtonType.REGULAR)) {
+                        but.setBorder(new LineBorder(this.a1));
+                        but.setEnabled(true);
+                    }
+                }
                 return 10;
             case "b16":
                 this.b16.setBorder(new LineBorder(this.a1));
+                for (JButton but : buttons.keySet()) {
+                    if (buttons.get(but).equals(ButtonType.REGULAR)) {
+                        but.setBorder(new LineBorder(this.a1));
+                        but.setEnabled(true);
+                    }
+                }
                 return 16;
             default:
                 return 0;
+        }
+    }
+
+    /**
+     * Changes a single number in the display between the bases
+     *
+     * @param _displayText
+     * @param _previousBase
+     * @return the number
+     */
+    private String changeSingle(String _displayText, int _previousBase) {
+        String regex;
+        switch (_previousBase) {
+            case 2:
+                regex = "^[01]+$";
+                break;
+            case 8:
+                regex = "^[0-7]+$";
+                break;
+            case 10:
+                regex = "^[0-9]+$";
+                break;
+            case 16:
+                regex = "^[0-9A-Fa-f]+$";
+                break;
+            default:
+                regex = "";
+        }
+
+        if (!_displayText.matches(regex)) {
+            return "";
+        }
+
+        try {
+            int decNum = Integer.parseInt(_displayText, _previousBase);
+            String result = Integer.toString(decNum, this.base);
+            return (this.base == 16) ? result.toUpperCase() : result;
+        } catch (NumberFormatException e) {
+            return "";
         }
     }
 }
