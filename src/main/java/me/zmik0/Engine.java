@@ -87,7 +87,7 @@ public class Engine implements ActionListener {
         } else if (e.getActionCommand().equals("=")) {
             if (this.base != 0) {
                 this.result = operation();
-                this.displayText = Integer.toString(this.result);
+                this.displayText = Integer.toString(this.result, this.base);
             } else {
                 this.displayText = "Select Base";
             }
@@ -280,7 +280,7 @@ public class Engine implements ActionListener {
         } else if (_type.equals(ButtonType.BASE)) {
             _button.setBorder(new LineBorder(this.off));
         } else if (_type.equals(ButtonType.EXTRA)) {
-            _button.setBorder(new LineBorder(this.a1));
+            _button.setBorder(new LineBorder(this.a2));
         } else {
             _button.setBorder(new LineBorder(this.a2));
         }
@@ -309,24 +309,31 @@ public class Engine implements ActionListener {
         System.out.println(this.display.getText());
         String str = this.display.getText();
 
-        String regex = "(-?\\d+)([+-/^x])(-?\\d+)";
-        String regexSqrt = "(-?√)(\\d+)";
+        String regex;
+        String regexSqrt;
+        if (this.base == 10) {
+            regex = "(-?\\d+)([+-/^x])(-?\\d+)";
+            regexSqrt = "(-?√)(\\d+)";
+        } else {
+            regex = "(\\d+)([+-/^x])(\\d+)";
+            regexSqrt = "(√)(\\d+)";
+        }
         Pattern pattern = Pattern.compile(regex);
         Pattern patternSqrt = Pattern.compile(regexSqrt);
         Matcher matcher = pattern.matcher(str);
         Matcher matcherSqrt = patternSqrt.matcher(str);
 
         if (matcher.matches()) {
-            this.num1 = Integer.parseInt(matcher.group(1));
+            this.num1 = Integer.parseInt(matcher.group(1), this.base);
             this.operation = matcher.group(2).toCharArray()[0];
-            this.num2 = Integer.parseInt(matcher.group(3));
+            this.num2 = Integer.parseInt(matcher.group(3), this.base);
         } else if (matcherSqrt.matches()) {
             if (matcherSqrt.group(1).toCharArray()[0] == '-') {
                 this.operation = matcherSqrt.group(1).toCharArray()[1];
             } else {
                 this.operation = matcherSqrt.group(1).toCharArray()[0];
             }
-            this.num1 = Integer.parseInt(matcherSqrt.group(2));
+            this.num1 = Integer.parseInt(matcherSqrt.group(2), this.base);
         } else {
             return 0;
         }
@@ -384,7 +391,9 @@ public class Engine implements ActionListener {
     private int setBase(String buttonType) {
 
         for (JButton but : toolButtons.keySet()) {
-            but.setBorder(new LineBorder(this.off));
+            if (toolButtons.get(but).equals(ButtonType.BASE)) {
+                but.setBorder(new LineBorder(this.off));
+            }
         }
 
         for (JButton but : buttons.keySet()) {
