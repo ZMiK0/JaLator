@@ -33,7 +33,7 @@ public class PopUp {
 
         this.frame.setResizable(false);
         this.frame.setLocation(50, 100);
-        this.frame.setSize(700, 50);
+        this.frame.setSize(900, 100);
         this.frame.setVisible(true);
         this.frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
     }

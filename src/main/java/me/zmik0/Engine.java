@@ -96,7 +96,7 @@ public class Engine implements ActionListener {
             this.displayText = displayText.substring(0, this.display.getText().length() - 1);
         } else if (e.getActionCommand().equals("ANS")) {
             this.displayText += this.result;
-        } else if (e.getActionCommand().charAt(0) == 'b') {
+        } else if (e.getActionCommand().charAt(0) == 'B') {
 
             if (this.displayText.equals("Select Base")) {
                 this.displayText = "";
@@ -152,10 +152,10 @@ public class Engine implements ActionListener {
         this.fg = new Color(235, 219, 178);
         this.off = new Color(60, 56, 54);
 
-        this.b2 = new JButton("b2");
-        this.b8 = new JButton("b8");
-        this.b10 = new JButton("b10");
-        this.b16 = new JButton("b16");
+        this.b2 = new JButton("B2");
+        this.b8 = new JButton("B8");
+        this.b10 = new JButton("B10");
+        this.b16 = new JButton("B16");
 
         this.CASIO = new JButton("CASIO");
         this.INFO = new JButton("INFO");
@@ -414,7 +414,7 @@ public class Engine implements ActionListener {
         }
 
         switch (buttonType) {
-            case "b2":
+            case "B2":
                 this.b2.setBorder(new LineBorder(this.a1));
                 for (JButton but : buttons.keySet()) {
                     if (buttons.get(but).equals(ButtonType.REGULAR) && (but.getText().equals("1") || but.getText().equals("0"))) {
@@ -423,7 +423,7 @@ public class Engine implements ActionListener {
                     }
                 }
                 return 2;
-            case "b8":
+            case "B8":
                 this.b8.setBorder(new LineBorder(this.a1));
                 for (JButton but : buttons.keySet()) {
                     if (buttons.get(but).equals(ButtonType.REGULAR) && (!but.getText().equals("9") && !but.getText().equals("8"))) {
@@ -432,7 +432,7 @@ public class Engine implements ActionListener {
                     }
                 }
                 return 8;
-            case "b10":
+            case "B10":
                 this.b10.setBorder(new LineBorder(this.a1));
                 for (JButton but : buttons.keySet()) {
                     if (buttons.get(but).equals(ButtonType.REGULAR)) {
@@ -441,7 +441,7 @@ public class Engine implements ActionListener {
                     }
                 }
                 return 10;
-            case "b16":
+            case "B16":
                 this.b16.setBorder(new LineBorder(this.a1));
                 for (JButton but : buttons.keySet()) {
                     if (buttons.get(but).equals(ButtonType.REGULAR)) {
