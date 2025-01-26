@@ -6,6 +6,7 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URI;
 import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -105,6 +106,15 @@ public class Engine implements ActionListener {
             this.base = setBase(e.getActionCommand());
             this.displayText = changeSingle(this.displayText, previousBase);
 
+        } else if (e.getActionCommand().equals("INFO")) {
+            PopUp popup = new PopUp("Information PopUp", "JaLator is a simple Java calculator created for a school project. Made by ZMiK0_");
+        } else if (e.getActionCommand().equals("CASIO")) {
+            try {
+                URI url = new URI("https://www.casio.com/es/scientific-calculators/");
+                Desktop.getDesktop().browse(url);
+            } catch (Exception e2) {
+                System.out.println("Errmmm");
+            }
         } else {
             if (this.base != 0) {
                 this.displayText += e.getActionCommand();
