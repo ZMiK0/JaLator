@@ -15,10 +15,22 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 public class Engine implements ActionListener {
     private JFrame frame;
     private JPanel contentPanel;
+
+    private JPanel topPanel;
+    private JPanel toolPanel;
     private JPanel displayPanel;
+
     private JPanel buttonPanel;
     private JTextField display;
     private String displayText;
+
+    private JButton b2;
+    private JButton b8;
+    private JButton b10;
+    private JButton b16;
+
+    private JButton CASIO;
+    private JButton INFO;
 
     private JButton n0;
     private JButton n1;
@@ -44,18 +56,22 @@ public class Engine implements ActionListener {
     private JButton ret;
     private JButton ans;
 
-    private enum ButtonType {REGULAR, OPERATOR}
+    private enum ButtonType {REGULAR, OPERATOR, BASE, EXTRA}
 
     private LinkedHashMap<JButton, ButtonType> buttons;
+    private LinkedHashMap<JButton, ButtonType> toolButtons;
 
     private int num1, num2, result;
     private char operation;
+
+    private int base;
 
     private Color bg;
     private Color a1;
     private Color a2;
     private Color bt;
     private Color fg;
+    private Color off;
 
     /**
      * Performs the button action
@@ -66,6 +82,7 @@ public class Engine implements ActionListener {
 
         if(e.getActionCommand().equals("R")) {
             this.displayText="";
+            this.base = setBase(e.getActionCommand());
         } else if (e.getActionCommand().equals("=")) {
             this.result = operation();
             this.displayText = Integer.toString(this.result);
@@ -73,7 +90,19 @@ public class Engine implements ActionListener {
             this.displayText= displayText.substring(0, this.display.getText().length() - 1) ;
         } else if (e.getActionCommand().equals("ANS")) {
             this.displayText+= this.result;
-        } else {this.displayText+=e.getActionCommand();}
+        } else if(e.getActionCommand().charAt(0) == 'b') {
+
+            if(this.displayText.equals("Select Base")) {
+                this.displayText = "";
+            }
+
+            this.base = setBase(e.getActionCommand());
+
+        } else {
+            if(this.base!=0) {
+                this.displayText += e.getActionCommand();
+            } else {this.displayText = "Select Base";}
+        }
 
         this.display.setText(this.displayText);
     }
@@ -87,7 +116,11 @@ public class Engine implements ActionListener {
         this.result = 0;
         this.frame = new JFrame(msg);
         this.contentPanel = new JPanel();
+
+        this.topPanel = new JPanel();
+        this.toolPanel = new JPanel();
         this.displayPanel = new JPanel();
+
         this.buttonPanel = new JPanel();
         this.display = new JTextField(12);
         this.displayText = "";
@@ -97,6 +130,15 @@ public class Engine implements ActionListener {
         this.a2 = new Color(250,189,47);
         this.bt = new Color(40,40,40);
         this.fg = new Color(235,219,178);
+        this.off = new Color(60, 56, 54);
+
+        this.b2 = new JButton("b2");
+        this.b8 = new JButton("b8");
+        this.b10 = new JButton("b10");
+        this.b16 = new JButton("b16");
+
+        this.CASIO = new JButton("CASIO");
+        this.INFO = new JButton("INFO");
 
         this.n0 = new JButton("0");
         this.n1 = new JButton("1");
@@ -150,7 +192,16 @@ public class Engine implements ActionListener {
         buttons.put(this.reset, ButtonType.OPERATOR);
         buttons.put(this.equal, ButtonType.OPERATOR);
 
+        this.toolButtons = new LinkedHashMap<>();
+        toolButtons.put(this.b2, ButtonType.BASE);
+        toolButtons.put(this.b8, ButtonType.BASE);
+        toolButtons.put(this.b10, ButtonType.BASE);
+        toolButtons.put(this.b16, ButtonType.BASE);
 
+        toolButtons.put(this.INFO, ButtonType.EXTRA);
+        toolButtons.put(this.CASIO, ButtonType.EXTRA);
+
+        this.base = 0;
 
         setSettings();
         addActionEvent(this);
@@ -165,9 +216,17 @@ public class Engine implements ActionListener {
         this.frame.add(this.contentPanel);
         this.frame.setBackground(this.bg);
 
+        this.topPanel.setLayout(new FlowLayout()); //sadjhvgajhgdfasghjdfgjhafdvghj
+        this.topPanel.setBackground(this.bg);
+        this.contentPanel.add(this.topPanel);
+
+        this.toolPanel.setLayout(new GridLayout(1,6,4,0));
+        this.toolPanel.setBackground(this.bg);
+        this.topPanel.add(this.toolPanel);
+
         this.displayPanel.setLayout(new FlowLayout());
         this.displayPanel.setBackground(this.bg);
-        this.contentPanel.add(this.displayPanel);
+        this.topPanel.add(this.displayPanel);
         this.displayPanel.add(this.display);
         this.display.setEditable(false);
         this.display.setForeground(this.fg);
@@ -177,6 +236,11 @@ public class Engine implements ActionListener {
         this.buttonPanel.setLayout(new GridLayout(5, 4, 2, 2));
         this.buttonPanel.setBackground(this.bg);
         this.contentPanel.add(this.buttonPanel);
+
+        for(JButton but: toolButtons.keySet()) {
+            this.toolPanel.add(but);
+            setFeaturesButton(but, toolButtons.get(but));
+        }
 
         for(JButton but : buttons.keySet()) {
             this.buttonPanel.add(but);
@@ -201,6 +265,10 @@ public class Engine implements ActionListener {
         _button.setBackground(this.bt);
         if (_type.equals(ButtonType.REGULAR)) {
             _button.setBorder(new LineBorder(this.a1));
+        } else if (_type.equals(ButtonType.BASE)) {
+            _button.setBorder(new LineBorder(this.off));
+        } else if (_type.equals(ButtonType.EXTRA)) {
+            _button.setBorder(new LineBorder(this.a1));
         } else { _button.setBorder(new LineBorder(this.a2)); }
     }
 
@@ -210,6 +278,9 @@ public class Engine implements ActionListener {
      */
     private void addActionEvent(Engine engine) {
         for(JButton but: engine.buttons.keySet()) {
+            but.addActionListener(engine);
+        }
+        for(JButton but: engine.toolButtons.keySet()) {
             but.addActionListener(engine);
         }
     }
@@ -225,7 +296,7 @@ public class Engine implements ActionListener {
         String regex = "(-?\\d+)([+-/^x])(-?\\d+)";
         String regexSqrt = "(-?√)(\\d+)";
         Pattern pattern = Pattern.compile(regex);
-        Pattern patternSqrt = Pattern.compile(regexSqrt);
+        Pattern patternSqrt = Pattern.compile(regexSqrt);<
         Matcher matcher = pattern.matcher(str);
         Matcher matcherSqrt = patternSqrt.matcher(str);
 
@@ -275,5 +346,29 @@ public class Engine implements ActionListener {
      */
     private int sqrtOf(int n) {
         return (int) Math.sqrt(n);
+    }
+
+    private int setBase(String buttonType) {
+
+        for(JButton but: toolButtons.keySet()) {
+            but.setBorder(new LineBorder(this.off));
+        }
+
+        switch (buttonType) {
+            case "b2":
+                this.b2.setBorder(new LineBorder(this.a1));
+                return 2;
+            case "b8":
+                this.b8.setBorder(new LineBorder(this.a1));
+                return 8;
+            case "b10":
+                this.b10.setBorder(new LineBorder(this.a1));
+                return 10;
+            case "b16":
+                this.b16.setBorder(new LineBorder(this.a1));
+                return 16;
+            default:
+                return 0;
+        }
     }
 }
