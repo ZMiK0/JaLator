@@ -95,7 +95,7 @@ public class Engine implements ActionListener {
         } else if (e.getActionCommand().equals("<-")) {
             this.displayText = displayText.substring(0, this.display.getText().length() - 1);
         } else if (e.getActionCommand().equals("ANS")) {
-            this.displayText += this.result;
+            this.displayText += Integer.toString(this.result, this.base);
         } else if (e.getActionCommand().charAt(0) == 'B') {
 
             if (this.displayText.equals("Select Base")) {
@@ -325,8 +325,8 @@ public class Engine implements ActionListener {
             regex = "(-?\\d+)([+-/^x])(-?\\d+)";
             regexSqrt = "(-?√)(\\d+)";
         } else {
-            regex = "(\\d+)([+-/^x])(\\d+)";
-            regexSqrt = "(√)(\\d+)";
+            regex = "([0-9A-Fa-f]+)([+-/^x])([0-9A-Fa-f]+)";
+            regexSqrt = "(√)([0-9A-Fa-f]+)";
         }
         Pattern pattern = Pattern.compile(regex);
         Pattern patternSqrt = Pattern.compile(regexSqrt);

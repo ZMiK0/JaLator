@@ -3,8 +3,6 @@ package me.zmik0;
 import javax.swing.*;
 import java.awt.*;
 
-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
-
 public class PopUp {
     private JFrame frame;
     private JPanel panel;
