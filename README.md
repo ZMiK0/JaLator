@@ -1,6 +1,6 @@
 # JaLator
 
-![foto](./media/calculator.png)
+![foto](./media/calculator2.png)
 
 **JaLator** is a simple Java calculator created for a school project.  
 It is intuitive and easy to use but currently has some limitations. For example, it only supports operations with two numbers at a time, such as `-2 + 2`, `0 / 3`, `-4 + -4`, `√49`, or `2^16`.
@@ -9,6 +9,7 @@ It is intuitive and easy to use but currently has some limitations. For example,
 
 - Perform basic arithmetic operations: addition, subtraction, multiplication, division, and square root.
 - Support for exponentiation with two numbers.
+- Support for different base.
 
 ## Limitations
 

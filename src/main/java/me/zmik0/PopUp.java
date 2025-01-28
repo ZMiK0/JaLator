@@ -10,7 +10,7 @@ public class PopUp {
     private Color bg;
     private Color fg;
 
-    public PopUp(String msg, String _message) {
+    public PopUp(String msg, String _message, int _w, int _h) {
 
         this.bg = new Color(29, 32, 33);
         this.fg = new Color(235, 219, 178);
@@ -30,8 +30,8 @@ public class PopUp {
         this.panel.add(this.text);
 
         this.frame.setResizable(false);
-        this.frame.setLocation(50, 100);
-        this.frame.setSize(900, 100);
+        this.frame.setLocation(0, 0);
+        this.frame.setSize(_w, _h);
         this.frame.setVisible(true);
         this.frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
     }

@@ -32,6 +32,9 @@ public class Engine implements ActionListener {
 
     private JButton CASIO;
     private JButton INFO;
+    private String infoMessage;
+    private JButton OWNER;
+    private String ownerMessage;
 
     private JButton n0;
     private JButton n1;
@@ -82,21 +85,28 @@ public class Engine implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        if (e.getActionCommand().equals("R")) {
+        if (e.getActionCommand().equals("R")) { //RESET
             this.displayText = "";
             this.base = setBase(e.getActionCommand());
-        } else if (e.getActionCommand().equals("=")) {
+        } else if (e.getActionCommand().equals("=")) { //OPERATION
             if (this.base != 0) {
                 this.result = operation();
-                this.displayText = Integer.toString(this.result, this.base);
+                this.displayText = Integer.toString(this.result, this.base).toUpperCase();
             } else {
                 this.displayText = "Select Base";
             }
-        } else if (e.getActionCommand().equals("<-")) {
-            this.displayText = displayText.substring(0, this.display.getText().length() - 1);
-        } else if (e.getActionCommand().equals("ANS")) {
+        } else if (e.getActionCommand().equals("<-")) { //BACKSPACE
+            try {
+                this.displayText = displayText.substring(0, this.display.getText().length() - 1);
+            } catch (StringIndexOutOfBoundsException ex) {
+                System.out.println("Nothing to erase!");
+            }
+
+
+        } else if (e.getActionCommand().equals("ANS")) { //ANS
             this.displayText += Integer.toString(this.result, this.base);
-        } else if (e.getActionCommand().charAt(0) == 'B') {
+
+        } else if (e.getActionCommand().charAt(0) == 'B') { //BASE
 
             if (this.displayText.equals("Select Base")) {
                 this.displayText = "";
@@ -106,16 +116,20 @@ public class Engine implements ActionListener {
             this.base = setBase(e.getActionCommand());
             this.displayText = changeSingle(this.displayText, previousBase);
 
-        } else if (e.getActionCommand().equals("INFO")) {
-            PopUp popup = new PopUp("Information PopUp", "JaLator is a simple Java calculator created for a school project. Made by ZMiK0_");
-        } else if (e.getActionCommand().equals("CASIO")) {
+        } else if (e.getActionCommand().equals("INFO")) { //INFO
+            PopUp popup = new PopUp("Information PopUp", this.infoMessage, 900, 100);
+
+        } else if (e.getActionCommand().equals("OWNER")) { //OWNER
+            PopUp popup = new PopUp("Owner PopUp", this.ownerMessage, 800, 300);
+
+        } else if (e.getActionCommand().equals("CASIO")) { //CASIO
             try {
                 URI url = new URI("https://www.casio.com/es/scientific-calculators/");
                 Desktop.getDesktop().browse(url);
             } catch (Exception e2) {
                 System.out.println("Errmmm");
             }
-        } else {
+        } else { //ADD
             if (this.base != 0) {
                 this.displayText += e.getActionCommand();
             } else {
@@ -142,7 +156,7 @@ public class Engine implements ActionListener {
         this.displayPanel = new JPanel();
 
         this.buttonPanel = new JPanel();
-        this.display = new JTextField(12);
+        this.display = new JTextField(20);
         this.displayText = "";
 
         this.bg = new Color(29, 32, 33);
@@ -159,6 +173,9 @@ public class Engine implements ActionListener {
 
         this.CASIO = new JButton("CASIO");
         this.INFO = new JButton("INFO");
+        this.infoMessage = "JaLator is a simple Java calculator created for a school project. Made by ZMiK0_";
+        this.OWNER = new JButton("OWNER");
+        this.ownerMessage = "Hey, I’m belz, or well, zmik0, I actually have quite a few names.\nI guess it’s due to my constant desire to change and improve myself.\nRight now, to be honest, I’m nothing. \nI want to study many things and I can’t decide on one, \nbut I’m passionate about artificial intelligence and operating systems. \nI guess I’ll take one of those paths.";
 
         this.n0 = new JButton("0");
         this.n1 = new JButton("1");
@@ -219,6 +236,7 @@ public class Engine implements ActionListener {
         toolButtons.put(this.b16, ButtonType.BASE);
 
         toolButtons.put(this.INFO, ButtonType.EXTRA);
+        toolButtons.put(this.OWNER, ButtonType.EXTRA);
         toolButtons.put(this.CASIO, ButtonType.EXTRA);
 
         this.base = 0;
@@ -282,6 +300,7 @@ public class Engine implements ActionListener {
      * @param _type
      */
     private void setFeaturesButton(JButton _button, ButtonType _type) {
+        _button.setFont(new Font("JetBrainsMono Nerd Font", Font.BOLD, 12));
         _button.setForeground(this.fg);
         _button.setBackground(this.bt);
         if (_type.equals(ButtonType.REGULAR)) {
@@ -488,7 +507,7 @@ public class Engine implements ActionListener {
         try {
             int decNum = Integer.parseInt(_displayText, _previousBase);
             String result = Integer.toString(decNum, this.base);
-            return (this.base == 16) ? result.toUpperCase() : result;
+            return result.toUpperCase();
         } catch (NumberFormatException e) {
             return "";
         }
